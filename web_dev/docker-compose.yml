@@ -1,0 +1,41 @@
+version: '3.3'
+services:
+  web:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    container_name: php73
+    depends_on:
+      - db
+    volumes:
+      - ./php:/var/www/html/
+    ports:
+      - 8000:80
+  db:
+    volumes:
+      - db_volume:/var/lib/mysql
+    container_name: mysql8
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: herauser
+      MYSQL_PASSWORD: herapass
+    ports:
+      - 6033:3306
+  phpMyAdmin:
+    container_name: phpMyAdmin
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - db
+    ports:
+      - 8004:80
+    environment:
+      MYSQL_USER: herauser
+      MYSQL_PASSWORD: herapass
+volumes:
+  db_volume:
+
+
